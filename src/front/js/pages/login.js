@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "../../styles/login.css";
 import { Link } from "react-router-dom";
 
+const BACKEND_URL = process.env.BACKEND_URL;
+
 const Login = () => {
 
 	//Estados
@@ -23,25 +25,74 @@ const Login = () => {
 	//Verificaciones
 	function verifyEmail() {
 		if (email === "" || !email.includes(".com") || !email.includes("@")) {
+			setMessage("El correo electronico que proporcionaste es invalido");
 			return false;
 		}
 		return true;
 	}
 
-	function verifyPassowrd() {
-		if (password.length < 8) {
-			return false;
+
+	//Funcion para enviar data a la API
+
+	async function enviarData() {
+		try {
+			const response = await fetch(BACKEND_URL + "api/token",
+				{
+					method: "POST",
+					body: JSON.stringify(
+						{
+							"email": email,
+							"password": password
+						}
+					),
+					headers: {
+						'Content-Type': "application/json"
+					}
+				})
+
+			if (response.status === 500) {
+				setMessage("Ocurrio un error, vuelva mas tarde");
+				return false;
+			}
+
+			if (response.status !== 201) {
+				setMessage("Correo electrónico o contraseña incorrecta, vuelve a intentarlo");
+				return false;
+			}
+
+			const data = await response.json();
+
+			return data;
+
+		} catch (error) {
+			setMessage("Ocurrió un error, vuelve a intentarlo más tarde")
+			return false
 		}
-		return true;
+
 	}
+
 
 	//Funcion handler para boton login
-	function loginHandler(event) {
+	async function loginHandler(event) {
 		event.preventDefault();
 
-		if (verifyEmail && verifyPassowrd) {
-			setMessage("Correo electronico o contraseña incorrecta, vuelva a intentarlo")
+		if (verifyEmail()) {
+
+			const responseData = await enviarData();
+
+			if (responseData === false) {
+				window.scrollTo(0, 0);
+				return
+			}
+
+			const token = responseData.token;
+			const name = responseData.name;
+			localStorage.setItem("token", token);
+			localStorage.setItem("name", name);
+			navigate("/dashboard");
+
 		}
+		window.scrollTo(0, 0);
 		return false
 	}
 
@@ -49,7 +100,7 @@ const Login = () => {
 	return (
 		<div className="container form-container">
 			{message && (
-				<div className="alert alert-danger mb-4" role="alert">
+				<div className="alert alert-danger mb-4 w-100 text-center" role="alert">
 					{message}
 				</div>
 			)}

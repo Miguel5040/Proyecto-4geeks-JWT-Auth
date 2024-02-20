@@ -97,7 +97,8 @@ def login():
         if validate_password:
             token = create_access_token(identity=user.id)
             return jsonify({"message": "token created successfully",
-                            "token": token}), 201
+                            "token": token,
+                            "name": user.name}), 201
         else:
             return jsonify({"message": "Correo electronico o contraseña incorrecta"}), 401
     except Exception as error:
