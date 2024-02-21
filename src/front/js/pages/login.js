@@ -91,7 +91,7 @@ const Login = () => {
 			const name = responseData.name;
 			localStorage.setItem("token", token);
 			localStorage.setItem("name", name);
-			navigate("/dashboard");
+			navigate("/private");
 
 		}
 		window.scrollTo(0, 0);

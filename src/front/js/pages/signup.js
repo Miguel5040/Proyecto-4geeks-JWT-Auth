@@ -121,7 +121,7 @@ const Signup = () => {
                 window.scrollTo(0, 0);
 
                 setTimeout(() => {
-                    navigate("/");
+                    navigate("/login");
                 }, 3500);
             }
 
@@ -158,7 +158,7 @@ const Signup = () => {
                 <button type="submit" className="btn btn-primary" onClick={signupHandler}>Iniciar Sesion</button>
             </form>
             <div className="d-flex">
-                <p>Ya estas registrado? <Link to={"/"}>Iniciar Sesion</Link></p>
+                <p>Ya estas registrado? <Link to={"/login"}>Iniciar Sesion</Link></p>
             </div>
         </div>
     )
