@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
@@ -10,6 +10,7 @@ const Signup = () => {
     //Estados
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [name, setName] = useState("");
     const [message, setMessage] = useState("");
     const [colorMessage, setColorMessage] = useState("alert-danger")
@@ -28,6 +29,11 @@ const Signup = () => {
     function setPasswordValue(event) {
         const value = event.target.value;
         setPassword(value);
+    }
+
+    function setConfirmPasswordValue(event) {
+        const value = event.target.value;
+        setConfirmPassword(value);
     }
 
     //Verificaciones
@@ -50,6 +56,14 @@ const Signup = () => {
     function verifyPassowrd() {
         if (password.length < 8) {
             setMessage("La contraseña tiene que tener 8 caracteres como minimo");
+            return false;
+        }
+        return true;
+    }
+
+    function verifyConfirmPassowrd() {
+        if (confirmPassword !== password) {
+            setMessage("Las contraseñas deben coincidir");
             return false;
         }
         return true;
@@ -97,7 +111,7 @@ const Signup = () => {
     async function signupHandler(event) {
         event.preventDefault();
 
-        if (verifyEmail() && verifyName() && verifyPassowrd()) {
+        if (verifyEmail() && verifyName() && verifyPassowrd() && verifyConfirmPassowrd()) {
 
             const statusCode = await enviarData();
 
@@ -118,7 +132,7 @@ const Signup = () => {
 
 
     return (
-        <div className="container form-container">
+        <div className="container form-container content">
             {message && (
                 <div className={"alert mb-4 w-100 text-center " + colorMessage} role="alert">
                     {message}
@@ -137,9 +151,14 @@ const Signup = () => {
                     <label htmlFor="exampleInputPassword1" className="form-label">Contraseña</label>
                     <input type="password" className="form-control" id="exampleInputPassword1" autoComplete="off" onChange={setPasswordValue} value={password} />
                 </div>
+                <div className="mb-3">
+                    <label htmlFor="exampleInputPassword2" className="form-label">Confirmar Contraseña</label>
+                    <input type="password" className="form-control" id="exampleInputPassword2" autoComplete="off" onChange={setConfirmPasswordValue} value={confirmPassword} />
+                </div>
                 <button type="submit" className="btn btn-primary" onClick={signupHandler}>Iniciar Sesion</button>
             </form>
             <div className="d-flex">
+                <p>Ya estas registrado? <Link to={"/"}>Iniciar Sesion</Link></p>
             </div>
         </div>
     )

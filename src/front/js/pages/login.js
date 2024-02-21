@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "../../styles/login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
 const Login = () => {
+
+	const navigate = useNavigate();
 
 	//Estados
 	const [email, setEmail] = useState("");
@@ -98,7 +100,7 @@ const Login = () => {
 
 
 	return (
-		<div className="container form-container">
+		<div className="container form-container content">
 			{message && (
 				<div className="alert alert-danger mb-4 w-100 text-center" role="alert">
 					{message}
